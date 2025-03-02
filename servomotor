@@ -1,0 +1,16 @@
+import gpiozero
+from gpiozero import Servo
+import RPi.GPIO as GPIO
+import time
+
+#define servo angles
+servo = Servo(25, min_pulse_width = x, max_pulse_width = y)
+
+
+#sensor prompt servo --> how
+
+# sensor detects car and counter +1/-1
+# RFID prompt boomgate to open --> if successful, if fails boomgate does not open
+
+while: True
+
