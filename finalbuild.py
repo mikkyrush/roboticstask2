@@ -39,27 +39,7 @@ paymentResult = ""
 payment_log = {}
 carpark = {}
 
-def lcd():
-   
-    lcd = CharLCD(i2c_expander='PCF8574', address=0x27, port=1, cols=16, rows=2, dotsize=8)
-    lcd.clear()
-    lcd.write_string('Occupied')
-    sleep(3)
-    lcd.clear()
-    lcd.write_string(parkstaken)
 
-def lcdtime():
-    lcd = CharLCD(i2c_expander='PCF8574', address=0x27, port=1, cols=16, rows=2, dotsize=8)
-    lcd.clear()
-    lcd.write_string('Time')
-    sleep(3)
-    lcd.write_string(exittime)
-    
-  
-def lcddisplay(display):
-    lcd = CharLCD(i2c_expander='PCF8574', address=0x27, port=1, cols=16, rows=2, dotsize=8)
-    lcd.clear()
-    lcd.write_string(display)
 
 def gateopen():
     sleep(2)
@@ -148,22 +128,15 @@ def requestpayment(duration):
         return False
 
 def detect_plate_number():
-    # Load the image
-   
-    #cam = cv2.VideoCapture(0)
-    #cam.set(3,640)
-    #cam.set(4,480)
+  
 
     ret, frame = cam.read()
 
-    #cv2.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-    #cv2.axis('off')
-    #cv2.show()
-
+   
     brightness = 8
 
     contrast = 2.3  
-    #adjust = cv2.addWeighted(frame, contrast, np.zeros(frame.shape, frame.dtype), 0, brightness)
+    adjust = cv2.addWeighted(frame, contrast, np.zeros(frame.shape, frame.dtype), 0, brightness)
     adjust = frame
     gray_scale = cv2.cvtColor(adjust, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray_scale, (5, 5), 0)
@@ -243,10 +216,12 @@ while True:
                 parked_duration = datetime.now() - carpark[text_detection]
                 print('Car',text_detection,': Exiting carpark at',datetime.now())
                 exittime = str(datetime.now())
+               #hard-coded that person would be there for 20 minutes for demo
+            
                 lcddisplay("Parked For: 20 Cost: $5.00")
                 print('Car',text_detection,': Duration in carpark',parked_duration)
             
-                #lcd.write_string('Duration', parked_duration)
+             
                 print('Car',text_detection,': Entered carpark at',carpark[text_detection])
                 if(requestpayment(parked_duration)):
                     print('Car',text_detection,': Payment Successful.')
@@ -259,8 +234,7 @@ while True:
             else:
                 carpark[text_detection] = datetime.now()
                 print('Car',text_detection,': Entered carpark at',carpark[text_detection])
-                #lcd()
-                #lcd.write_string('Entered at', carpark[text_detection] )
+            
             gateopen()
 
 
